@@ -11,7 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150825002347) do
+ActiveRecord::Schema.define(version: 20150825002407) do
+
+  create_table "coupons", force: :cascade do |t|
+    t.string   "code",            limit: 255
+    t.string   "role",            limit: 255
+    t.string   "mailing_list_id", limit: 255
+    t.string   "list_group",      limit: 255
+    t.integer  "price",           limit: 4
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  limit: 255, default: "", null: false
@@ -27,9 +37,14 @@ ActiveRecord::Schema.define(version: 20150825002347) do
     t.datetime "created_at",                                      null: false
     t.datetime "updated_at",                                      null: false
     t.string   "name",                   limit: 255
+    t.integer  "role",                   limit: 4
+    t.string   "stripe_token",           limit: 255
+    t.integer  "coupon_id",              limit: 4
   end
 
+  add_index "users", ["coupon_id"], name: "index_users_on_coupon_id", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
 
+  add_foreign_key "users", "coupons"
 end
